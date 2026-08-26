@@ -1,14 +1,17 @@
 #include <iostream>
 #include <filesystem>
-#include <fstream>
+
 #include <unordered_map>
 #include <cstring>
 
-using string = std::string;
+#include "types.hpp"
+#include "file_utils.hpp"
+
 
 const string configFileName{"autoc.conf"};
 
-std::unordered_map<string, string> map_settings_file(std::filesystem::path& path);
+
+void file_iterate(const std::filesystem::path& path);
 
 int main() {
 	
@@ -16,38 +19,24 @@ int main() {
 	auto filePath {cwd / configFileName};
 	
 	auto configMap = map_settings_file(filePath);
-	
+
+	//file_iterate(cwd);
+
+	for(const auto& e : get_files_in_dir(cwd, {".cpp", ".hpp"})){
+		std::cout << e << "\n";
+	}
 
 	return 0;
 }
 
-std::unordered_map<string, string> map_settings_file(std::filesystem::path& path){
-	std::ifstream configFile(path);
 
-	if(!configFile){
-		std::cerr << "Couldn't open configuration file\n";
-		return {};
+
+void file_iterate(const std::filesystem::path& path){
+	for(const auto& entry : std::filesystem::directory_iterator(path)){
+		if(entry.is_directory()){
+			file_iterate(entry.path());
+		}else{
+			std::cout << entry.path() << "\n";
+		}
 	}
-
-	std::unordered_map<string, string> map;
-
-	string line;
-	while(std::getline(configFile, line)){
-		char *token = std::strtok(line.data(), " =");
-		if(!token) continue;
-		string name {token};
-		
-		token = std::strtok(nullptr, " =");
-		if(!token) continue;
-		string value {token};
-
-		map[name] = value;
-	}
-
-	/*for(const auto& [key, value] : map){
-		std::cout << key << " " << value << "\n";
-	}*/
-
-	/*No hace falta pointer, c++ puede hacer esto de manera eficiente*/
-	return map;
 }
