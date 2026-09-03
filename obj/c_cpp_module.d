@@ -1,0 +1,4 @@
+obj/c_cpp_module.o: src/c_cpp_module.cpp include/c_cpp_module.hpp \
+ include/types.hpp
+include/c_cpp_module.hpp:
+include/types.hpp:

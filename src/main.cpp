@@ -7,6 +7,7 @@
 #include "types.hpp"
 #include "file_utils.hpp"
 
+#include "c_cpp_module.hpp"
 
 const string configFileName{"autoc.conf"};
 
@@ -15,16 +16,20 @@ void file_iterate(const std::filesystem::path& path);
 
 int main() {
 	
-	auto cwd = std::filesystem::current_path();
+	auto cwd{ std::filesystem::current_path() };
 	auto filePath {cwd / configFileName};
 	
-	auto configMap = map_settings_file(filePath);
+	auto configMap{ map_settings_file(filePath) };
 
 	//file_iterate(cwd);
 
-	for(const auto& e : get_files_in_dir(cwd, {".cpp", ".hpp"})){
+	std::vector<std::filesystem::path> sources {get_files_in_dir(cwd, {".cpp"})};
+
+	/*for(const auto& e : get_files_in_dir(cwd, {".cpp"})){
 		std::cout << e << "\n";
-	}
+	}*/
+
+	compile(sources, cwd, {});
 
 	return 0;
 }

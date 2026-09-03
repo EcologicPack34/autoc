@@ -9,6 +9,6 @@
 
 std::unordered_map<string, string> map_settings_file(const std::filesystem::path& path);
 
-std::vector<string> get_files_in_dir(const std::filesystem::path& path, const std::vector<string>& extensions);
+std::vector<std::filesystem::path> get_files_in_dir(const std::filesystem::path& path, const std::vector<string>& extensions);
 
 #endif
