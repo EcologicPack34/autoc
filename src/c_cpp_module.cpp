@@ -28,15 +28,24 @@ void link_executable(const std::vector<fs::path>& obj_files, const std::string_v
 
 /*-----------IMPLEMENTATION------------*/
 
-void compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings){
+bool compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings){
 
     fs::path obj_path { cwd / obj_dir };
     if(!fs::exists(obj_path) || !fs::is_directory(obj_path)){
         fs::create_directory(obj_path);
     }
     
-
-    std::string_view compiler{unorderedmap_get_or_default<string,string>(settings, "compiler", default_compiler)};
+    string compiler;
+    {
+        auto elem{ settings.find("compiler")};
+        if(elem == settings.end()){
+            //Change to print if --verbose
+            std::cerr << "\"compiler\" option missing in settings file";
+            return false;
+        }
+        compiler = elem->second;
+    }
+    
     string base_comp_cmd {compiler};
     base_comp_cmd += " -MMD -MP ";
     
@@ -70,6 +79,7 @@ void compile(const std::filesystem::path& cwd, const std::unordered_map<string, 
         link_executable(obj_files, compiler, compile_flags);
     }
 
+    return true;
 }
 
 std::vector<fs::path> read_dependencies(const fs::path& dep_file)

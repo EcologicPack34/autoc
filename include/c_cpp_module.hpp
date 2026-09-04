@@ -7,6 +7,6 @@
 #include <filesystem>
 #include <unordered_map>
 
-void compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings);
+bool compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings);
 
 #endif
