@@ -13,6 +13,9 @@ const string src_dir{"src"};
 const string obj_dir{"obj"};
 const string include_dir{"include"};
 
+const string default_compiler{"g++"};
+const string default_comp_flags{""};
+
 /*-----DEFINITIONS------*/
 
 std::vector<fs::path> read_dependencies(const fs::path& dep_file);
@@ -21,7 +24,7 @@ std::vector<fs::path> get_include_dirs(const fs::path& cwd);
 void compile_file(const string& base_cmd, const fs::path& src, const fs::path& obj);
 bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file);
 
-void link_executable(const std::vector<fs::path>& obj_files, const string& compiler, const string& compile_flags);
+void link_executable(const std::vector<fs::path>& obj_files, const std::string_view& compiler, const std::string_view& compile_flags);
 
 /*-----------IMPLEMENTATION------------*/
 
@@ -33,11 +36,11 @@ void compile(const std::filesystem::path& cwd, const std::unordered_map<string, 
     }
     
 
-    string compiler{unorderedmap_get_or_default<string,string>(settings, "compiler", "g++")};
+    std::string_view compiler{unorderedmap_get_or_default<string,string>(settings, "compiler", default_compiler)};
     string base_comp_cmd {compiler};
     base_comp_cmd += " -MMD -MP ";
     
-    string compile_flags{unorderedmap_get_or_default<string, string>(settings, "compile_flags", "")};
+    std::string_view compile_flags{unorderedmap_get_or_default<string, string>(settings, "compile_flags", default_comp_flags)};
     base_comp_cmd += compile_flags;
 
     std::vector<fs::path> includes{ get_include_dirs(cwd) };
@@ -158,10 +161,10 @@ bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file){
     return false;
 }
 
-void link_executable(const std::vector<fs::path>& obj_files, const string& compiler, const string& compile_flags){
+void link_executable(const std::vector<fs::path>& obj_files, const std::string_view& compiler, const std::string_view& compile_flags){
     string cmd{compiler};
-
-    cmd += " " + compile_flags;
+    cmd += " ";
+    cmd += compile_flags;
 
     for(const auto& obj : obj_files){
         cmd += " " + obj.string();
