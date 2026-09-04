@@ -21,20 +21,10 @@ int main() {
 	
 	auto configMap{ map_settings_file(filePath) };
 
-	//file_iterate(cwd);
-
-	std::vector<std::filesystem::path> sources {get_files_in_dir(cwd, {".cpp"})};
-
-	/*for(const auto& e : get_files_in_dir(cwd, {".cpp"})){
-		std::cout << e << "\n";
-	}*/
-
-	compile(sources, cwd, {});
+	compile(cwd, {});
 
 	return 0;
 }
-
-
 
 void file_iterate(const std::filesystem::path& path){
 	for(const auto& entry : std::filesystem::directory_iterator(path)){

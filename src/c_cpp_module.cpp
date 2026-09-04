@@ -4,11 +4,15 @@
 #include <fstream>
 #include <algorithm>
 
+#include "file_utils.hpp"
+
 namespace fs = std::filesystem;
 
 const string src_dir{"src"};
 const string obj_dir{"obj"};
 const string include_dir{"include"};
+
+/*-----DEFINITIONS------*/
 
 std::vector<fs::path> read_dependencies(const fs::path& dep_file);
 std::vector<fs::path> get_include_dirs(const fs::path& cwd);
@@ -16,52 +20,47 @@ std::vector<fs::path> get_include_dirs(const fs::path& cwd);
 void compile_file(const string& base_cmd, const fs::path& src, const fs::path& obj);
 bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file);
 
-void compile(const std::vector<std::filesystem::path>& files, const std::filesystem::path& cwd, const std::vector<string>& compile_flags){
+void link_executable(const std::vector<fs::path>& obj_files, const std::vector<string>& compile_flags);
+
+/*-----------IMPLEMENTATION------------*/
+
+void compile(const std::filesystem::path& cwd, const std::vector<string>& compile_flags){
 
     fs::path obj_path { cwd / obj_dir };
-
     if(!fs::exists(obj_path) || !fs::is_directory(obj_path)){
         fs::create_directory(obj_path);
     }
 
-
     std::vector<fs::path> includes{ get_include_dirs(cwd) };
 
-
-    string base_cmd { "g++ -MMD -MP" };
+    string base_comp_cmd { "g++ -MMD -MP" };
     for(const auto& flag: compile_flags){
-        base_cmd += " " + flag;
+        base_comp_cmd += " " + flag;
     }
     for(const auto& dir: includes){
-        base_cmd += " -I" + dir.string();
+        base_comp_cmd += " -I" + dir.string();
     }
 
     bool needs_link = false;
     std::vector<fs::path> obj_files;
 
-    for(const auto& file : files){
-        fs::path relative = fs::relative(file, cwd / src_dir);
+    std::vector<fs::path> src_files {get_files_in_dir(cwd, {".cpp" , ".c"})};
+
+    for(const auto& src : src_files){
+        fs::path relative = fs::relative(src, cwd / src_dir);
         fs::path dep_file{obj_path / relative.replace_extension(".d")};
         fs::path obj_file{obj_path / relative.replace_extension(".o")};
         
         obj_files.push_back(obj_file);
 
         if(needs_recompilation(obj_file, dep_file)){
-            compile_file(base_cmd, file, obj_file);
+            compile_file(base_comp_cmd, src, obj_file);
             needs_link = true;
         }
     }
 
     if(needs_link){
-        string cmd{"g++"};
-
-        for(const auto& obj : obj_files){
-            cmd += " " + obj.string();
-        }
-
-        cmd += " -o build/app_name";
-
-        std::system(cmd.c_str());
+        link_executable(obj_files, compile_flags);
     }
 
 }
@@ -154,3 +153,20 @@ bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file){
 
     return false;
 }
+
+void link_executable(const std::vector<fs::path>& obj_files, const std::vector<string>& compile_flags){
+    string cmd{"g++"};
+
+    for(const auto& flag: compile_flags){
+        cmd += " " + flag;
+    }
+
+    for(const auto& obj : obj_files){
+        cmd += " " + obj.string();
+    }
+
+    cmd += " -o build/app_name";
+
+    std::system(cmd.c_str());
+}
+

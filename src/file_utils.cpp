@@ -22,16 +22,16 @@ std::unordered_map<string, string> map_settings_file(const std::filesystem::path
 		if(!token) continue;
 		string name {token};
 		
-		token = std::strtok(nullptr, " =");
+		token = std::strtok(nullptr, "\n\r");
 		if(!token) continue;
 		string value {token};
 
 		map[name] = value;
 	}
 
-	/*for(const auto& [key, value] : map){
+	for(const auto& [key, value] : map){
 		std::cout << key << " " << value << "\n";
-	}*/
+	}
 
 	/*No hace falta pointer, c++ puede hacer esto de manera eficiente*/
 	return map;

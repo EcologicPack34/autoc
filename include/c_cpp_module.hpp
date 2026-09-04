@@ -6,6 +6,6 @@
 #include <vector>
 #include <filesystem>
 
-void compile(const std::vector<std::filesystem::path>& files, const std::filesystem::path& cwd, const std::vector<string>& compile_flags);
+void compile(const std::filesystem::path& cwd, const std::vector<string>& compile_flags);
 
 #endif
