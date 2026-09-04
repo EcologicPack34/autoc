@@ -7,34 +7,50 @@
 #include "utils.hpp"
 
 std::unordered_map<string, string> map_settings_file(const std::filesystem::path& path){
+	
 	std::ifstream configFile(path);
 
-	if(!configFile){
-		std::cerr << "Couldn't open configuration file\n";
-		return {};
-	}
+    if (!configFile) {
+        std::cerr << "Couldn't open configuration file\n";
+        return {};
+    }
 
-	std::unordered_map<string, string> map;
+    std::unordered_map<std::string, std::string> map;
 
-	string line;
-	while(std::getline(configFile, line)){
-		char *token = std::strtok(line.data(), " =");
-		if(!token) continue;
-		string name {token};
-		
-		token = std::strtok(nullptr, "\n\r");
-		if(!token) continue;
-		string value {token};
+    string line;
+    while (std::getline(configFile, line)) {
+        auto pos = line.find('=');
 
-		map[name] = value;
-	}
+        if (pos == std::string::npos)
+            continue;
 
-	for(const auto& [key, value] : map){
-		std::cout << key << " " << value << "\n";
-	}
+        string name = line.substr(0, pos);
+        string value = line.substr(pos + 1);
 
-	/*No hace falta pointer, c++ puede hacer esto de manera eficiente*/
-	return map;
+        // Trim whitespace from the key
+        auto first = name.find_first_not_of(" \t");
+        auto last  = name.find_last_not_of(" \t");
+
+        if (first == string::npos)
+            continue;
+
+        name = name.substr(first, last - first + 1);
+
+        // Trim whitespace from the value
+        first = value.find_first_not_of(" \t");
+        last  = value.find_last_not_of(" \t");
+
+        if (first != string::npos)
+            value = value.substr(first, last - first + 1);
+        else
+            value.clear();
+
+        map[name] = value;
+
+		std::cout << name << " " << value << "\n";
+    }
+
+    return map;
 }
 
 //local overload of the function for recursion
@@ -68,3 +84,15 @@ std::vector<std::filesystem::path> get_files_in_dir(const std::filesystem::path&
     return result;
 }
 
+std::vector<string> string_to_vector(const string& str, char separator){
+
+	std::stringstream stream{str};
+	string token;
+
+	std::vector<string> output;
+	while(std::getline(stream, token, separator)){
+		output.push_back(token);
+	}
+
+	return output;
+}

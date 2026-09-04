@@ -5,7 +5,8 @@
 
 #include <vector>
 #include <filesystem>
+#include <unordered_map>
 
-void compile(const std::filesystem::path& cwd, const std::vector<string>& compile_flags);
+void compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings);
 
 #endif

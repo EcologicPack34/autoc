@@ -11,4 +11,6 @@ std::unordered_map<string, string> map_settings_file(const std::filesystem::path
 
 std::vector<std::filesystem::path> get_files_in_dir(const std::filesystem::path& path, const std::vector<string>& extensions);
 
+std::vector<string> string_to_vector(const string& str, char separator = ' ');
+
 #endif

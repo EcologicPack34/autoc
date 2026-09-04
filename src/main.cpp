@@ -18,10 +18,8 @@ int main() {
 	
 	auto cwd{ std::filesystem::current_path() };
 	auto filePath {cwd / configFileName};
-	
-	auto configMap{ map_settings_file(filePath) };
 
-	compile(cwd, {});
+	compile(cwd, map_settings_file(filePath));
 
 	return 0;
 }

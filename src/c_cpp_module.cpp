@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "file_utils.hpp"
+#include "utils.hpp"
 
 namespace fs = std::filesystem;
 
@@ -20,23 +21,26 @@ std::vector<fs::path> get_include_dirs(const fs::path& cwd);
 void compile_file(const string& base_cmd, const fs::path& src, const fs::path& obj);
 bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file);
 
-void link_executable(const std::vector<fs::path>& obj_files, const std::vector<string>& compile_flags);
+void link_executable(const std::vector<fs::path>& obj_files, const string& compiler, const string& compile_flags);
 
 /*-----------IMPLEMENTATION------------*/
 
-void compile(const std::filesystem::path& cwd, const std::vector<string>& compile_flags){
+void compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings){
 
     fs::path obj_path { cwd / obj_dir };
     if(!fs::exists(obj_path) || !fs::is_directory(obj_path)){
         fs::create_directory(obj_path);
     }
+    
+
+    string compiler{unorderedmap_get_or_default<string,string>(settings, "compiler", "g++")};
+    string base_comp_cmd {compiler};
+    base_comp_cmd += " -MMD -MP ";
+    
+    string compile_flags{unorderedmap_get_or_default<string, string>(settings, "compile_flags", "")};
+    base_comp_cmd += compile_flags;
 
     std::vector<fs::path> includes{ get_include_dirs(cwd) };
-
-    string base_comp_cmd { "g++ -MMD -MP" };
-    for(const auto& flag: compile_flags){
-        base_comp_cmd += " " + flag;
-    }
     for(const auto& dir: includes){
         base_comp_cmd += " -I" + dir.string();
     }
@@ -60,7 +64,7 @@ void compile(const std::filesystem::path& cwd, const std::vector<string>& compil
     }
 
     if(needs_link){
-        link_executable(obj_files, compile_flags);
+        link_executable(obj_files, compiler, compile_flags);
     }
 
 }
@@ -154,12 +158,10 @@ bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file){
     return false;
 }
 
-void link_executable(const std::vector<fs::path>& obj_files, const std::vector<string>& compile_flags){
-    string cmd{"g++"};
+void link_executable(const std::vector<fs::path>& obj_files, const string& compiler, const string& compile_flags){
+    string cmd{compiler};
 
-    for(const auto& flag: compile_flags){
-        cmd += " " + flag;
-    }
+    cmd += " " + compile_flags;
 
     for(const auto& obj : obj_files){
         cmd += " " + obj.string();
