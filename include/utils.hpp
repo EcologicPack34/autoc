@@ -25,4 +25,12 @@ const Value& unorderedmap_get_or_default(const std::unordered_map<Key,Value>& ma
     return (elem != map.end()) ? elem->second : default_value;
 }
 
+template <typename Key, typename Value>
+const Value* unorderedmap_try_get(const std::unordered_map<Key, Value>& map, const Key& key){
+    auto elem {map.find(key)};
+
+    return (elem != map.end()) ? &elem->second : nullptr;
+}
+
+
 #endif

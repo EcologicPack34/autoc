@@ -19,17 +19,9 @@ int main() {
 	auto cwd{ std::filesystem::current_path() };
 	auto filePath {cwd / configFileName};
 
-	compile(cwd, map_settings_file(filePath));
+	if(compile(cwd, map_settings_file(filePath)) == false){
+		return 1;
+	}
 
 	return 0;
-}
-
-void file_iterate(const std::filesystem::path& path){
-	for(const auto& entry : std::filesystem::directory_iterator(path)){
-		if(entry.is_directory()){
-			file_iterate(entry.path());
-		}else{
-			std::cout << entry.path() << "\n";
-		}
-	}
 }
