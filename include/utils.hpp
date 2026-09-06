@@ -4,6 +4,7 @@
 #define _UTILS_H_
 
 #include <vector>
+#include <string>
 
 #include <algorithm>
 #include <unordered_map>
@@ -32,5 +33,5 @@ const Value* unorderedmap_try_get(const std::unordered_map<Key, Value>& map, con
     return (elem != map.end()) ? &elem->second : nullptr;
 }
 
-
+int execute_and_wait(const std::vector<std::string>& cmd);
 #endif

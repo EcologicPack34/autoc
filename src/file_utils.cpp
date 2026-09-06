@@ -47,7 +47,7 @@ std::unordered_map<string, string> map_settings_file(const std::filesystem::path
 
         map[name] = value;
 
-		std::cout << name << " " << value << "\n";
+		//std::cout << name << " " << value << "\n";
     }
 
     return map;

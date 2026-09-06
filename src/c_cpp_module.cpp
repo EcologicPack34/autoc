@@ -4,6 +4,9 @@
 #include <fstream>
 #include <algorithm>
 
+#include <unistd.h>
+#include <sys/wait.h>
+
 #include "file_utils.hpp"
 #include "utils.hpp"
 
@@ -21,7 +24,7 @@ static const string setting_src_extension{"src_extension"};
 
 struct settings{
     std::string_view compiler;
-    std::string_view compile_flags;
+    std::vector<string> compile_flags;
     std::vector<string> src_extensions;
 };
 
@@ -30,7 +33,7 @@ bool read_settings(struct settings& settings, const std::unordered_map<string, s
 std::vector<fs::path> read_dependencies(const fs::path& dep_file);
 std::vector<fs::path> get_include_dirs(const fs::path& cwd);
 
-void compile_file(const string& base_cmd, const fs::path& src, const fs::path& obj);
+bool compile_file(const std::vector<string>& base_cmd, const fs::path& src, const fs::path& obj);
 bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file);
 
 void link_executable(const std::vector<fs::path>& obj_files, const struct settings& settings);
@@ -49,14 +52,17 @@ bool compile(const std::filesystem::path& cwd, const std::unordered_map<string, 
         return false;
     }
     
-    string base_comp_cmd {settings.compiler};
-    base_comp_cmd += " -MMD -MP ";
+    std::vector<string> base_cmd;
+    base_cmd.emplace_back(settings.compiler);
 
-    base_comp_cmd += settings.compile_flags;
+    base_cmd.push_back("-MMD");
+    base_cmd.push_back("-MP");
+    base_cmd.insert(base_cmd.end(), settings.compile_flags.begin(), settings.compile_flags.end());
+    //compileflags
 
     std::vector<fs::path> includes{ get_include_dirs(cwd) };
     for(const auto& dir: includes){
-        base_comp_cmd += " -I" + dir.string();
+        base_cmd.push_back("-I" + dir.string());
     }
 
     bool needs_link = false;
@@ -72,9 +78,12 @@ bool compile(const std::filesystem::path& cwd, const std::unordered_map<string, 
         obj_files.push_back(obj_file);
 
         if(needs_recompilation(obj_file, dep_file)){
-            compile_file(base_comp_cmd, src, obj_file);
+            if(compile_file(base_cmd, src, obj_file) == false){
+                return false;
+            }
             needs_link = true;
         }
+        
     }
 
     if(needs_link){
@@ -100,7 +109,7 @@ bool read_settings(struct settings& settings, const std::unordered_map<string, s
         std::cerr << "\"" << setting_comp_flags << "\" option missing in settings file";
         return false;
     }
-    settings.compile_flags = elem->second;
+    settings.compile_flags = string_to_vector(elem->second);
 
     elem = settings_map.find(setting_src_extension);
     if(elem == settings_map.end()){
@@ -108,7 +117,7 @@ bool read_settings(struct settings& settings, const std::unordered_map<string, s
         std::cerr << "\"" << setting_src_extension << "\" option missing in settings file";
         return false;
     }
-    settings.src_extensions = string_to_vector(elem->second, ' ');
+    settings.src_extensions = string_to_vector(elem->second);
 
     return true;
 }
@@ -167,15 +176,18 @@ std::vector<fs::path> get_include_dirs(const fs::path& cwd){
     return dirs;
 }
 
-void compile_file(const string& base_cmd, const fs::path& src, const fs::path& obj){
-    string cmd {base_cmd};
+bool compile_file(const std::vector<string>& base_cmd, const fs::path& src, const fs::path& obj){
+    std::vector<string> cmd {base_cmd};
 
-    cmd += " -c " + src.string();
-    cmd += " -o " + obj.string();
+    cmd.push_back("-c");
+    cmd.push_back(src.string());
+    cmd.push_back("-o");
+    cmd.push_back(obj.string());
+    
+    std::cout << "Compiling file: " << src.filename() << "\n";
+    execute_and_wait(cmd);
 
-    std::cout << cmd << "\n";
-
-    std::system(cmd.c_str());
+    return true;
 }
 
 bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file){
@@ -203,16 +215,20 @@ bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file){
 }
 
 void link_executable(const std::vector<fs::path>& obj_files, const struct settings& settings){
-    string cmd{settings.compiler};
-    cmd += " ";
-    cmd += settings.compile_flags;
+    std::vector<string> cmd;
+
+    cmd.emplace_back(settings.compiler);
+    
+    cmd.insert(cmd.end(), settings.compile_flags.begin(), settings.compile_flags.end());
 
     for(const auto& obj : obj_files){
-        cmd += " " + obj.string();
+        cmd.push_back(obj.string());
     }
+    cmd.push_back("-o");
+    cmd.push_back("build/app_name");
 
-    cmd += " -o build/app_name";
+    std::cout << "Linking executable\n";
 
-    std::system(cmd.c_str());
+    execute_and_wait(cmd);
 }
 

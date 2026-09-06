@@ -1,6 +1,10 @@
-obj/c_cpp_module.o: src/c_cpp_module.cpp include/c_cpp_module.hpp \
- include/types.hpp include/file_utils.hpp include/utils.hpp
-include/c_cpp_module.hpp:
-include/types.hpp:
-include/file_utils.hpp:
-include/utils.hpp:
+/home/ecopack34/projects/autoc/obj/c_cpp_module.o: \
+ /home/ecopack34/projects/autoc/src/c_cpp_module.cpp \
+ /home/ecopack34/projects/autoc/include/c_cpp_module.hpp \
+ /home/ecopack34/projects/autoc/include/types.hpp \
+ /home/ecopack34/projects/autoc/include/file_utils.hpp \
+ /home/ecopack34/projects/autoc/include/utils.hpp
+/home/ecopack34/projects/autoc/include/c_cpp_module.hpp:
+/home/ecopack34/projects/autoc/include/types.hpp:
+/home/ecopack34/projects/autoc/include/file_utils.hpp:
+/home/ecopack34/projects/autoc/include/utils.hpp:
