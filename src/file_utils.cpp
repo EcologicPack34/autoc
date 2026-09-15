@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstring>
 
+
 #include "utils.hpp"
 
 std::unordered_map<string, string> map_settings_file(const std::filesystem::path& path){
@@ -95,4 +96,18 @@ std::vector<string> string_to_vector(const string& str, char separator){
 	}
 
 	return output;
+}
+
+std::optional<int> compare_file_mod_dates(const std::filesystem::path& file1, const std::filesystem::path& file2){
+
+    if(std::filesystem::exists(file1) == false || std::filesystem::exists(file2) == false){
+        return {};
+    }
+
+    auto file1_time = std::filesystem::last_write_time(file1);
+    auto file2_time = std::filesystem::last_write_time(file2);
+
+    if(file1_time < file2_time) return -1;
+    else if(file1_time > file2_time) return 1;
+    else return 0;
 }

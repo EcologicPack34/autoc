@@ -33,5 +33,6 @@ const Value* unorderedmap_try_get(const std::unordered_map<Key, Value>& map, con
     return (elem != map.end()) ? &elem->second : nullptr;
 }
 
+//first elem is the executable path, rest are are arguments
 int execute_and_wait(const std::vector<std::string>& cmd);
 #endif

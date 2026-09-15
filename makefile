@@ -15,7 +15,7 @@ CFLAGS := -Wall -Werror -pedantic-errors
 CFLAGS += -ggdb
 
 
-EXE_NAME := app_name
+EXE_NAME := autoc
 
 #source, object and include directories
 #ALL DIRECTORIES SHOULD BE LIMITED TO JUST ONE
