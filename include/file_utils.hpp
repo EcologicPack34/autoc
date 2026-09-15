@@ -1,7 +1,6 @@
 #ifndef _FILE_UTILS_H_
 #define _FILE_UTILS_H_
 
-#include <unordered_map>
 #include <filesystem>
 #include <vector>
 #include <optional>

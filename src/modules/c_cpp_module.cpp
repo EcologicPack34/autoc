@@ -9,6 +9,7 @@
 
 namespace fs = std::filesystem;
 
+
 static const string setting_compiler{"compiler"};
 static const string setting_comp_flags{"compile_flags"};
 static const string setting_src_extension{"src_extension"};
@@ -21,19 +22,6 @@ static const string setting_build_dir{"build_directory"};
 static const string setting_exec_name{"exec_name"};
 
 /*-----DEFINITIONS------*/
-
-struct settings{
-    std::string_view compiler;
-    std::vector<string> compile_flags;
-    std::vector<string> src_extensions;
-
-    std::string_view src_dir;
-    std::string_view obj_dir;
-    std::string_view include_dir;
-    std::string_view build_dir;
-
-    std::string_view exec_name;
-};
 
 std::vector<fs::path> read_dependencies(const fs::path& dep_file);
 std::vector<fs::path> get_include_dirs(const fs::path& cwd);

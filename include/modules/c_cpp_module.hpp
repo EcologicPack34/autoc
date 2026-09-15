@@ -9,8 +9,6 @@
 
 #include "modules/base_module.hpp"
 
-bool compile(const std::filesystem::path& cwd, const std::unordered_map<string, string>& settings);
-
 class C_CPP_Module : public BaseModule{
     public:
         bool read_settings(const std::unordered_map<string, string>& settings_map);

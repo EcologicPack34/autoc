@@ -1,11 +1,9 @@
-#include "file_utils.hpp"
-
 #include <fstream>
 #include <iostream>
 #include <cstring>
 
-
 #include "utils.hpp"
+#include "file_utils.hpp"
 
 std::unordered_map<string, string> map_settings_file(const std::filesystem::path& path){
 	
