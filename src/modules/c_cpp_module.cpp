@@ -4,9 +4,6 @@
 #include <fstream>
 #include <algorithm>
 
-#include <unistd.h>
-#include <sys/wait.h>
-
 #include "file_utils.hpp"
 #include "utils.hpp"
 
