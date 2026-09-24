@@ -1,0 +1,82 @@
+#example toml configuration (for now)
+
+[project]
+name = "autoc" #project name
+
+[toolchain.gnu]
+cc = "gcc"
+cxx = "g++"
+
+[toolchain.other]
+cc = "othercc"
+cxx = "other++"
+
+[defaults]
+toolchain = "gnu"
+target = "app"
+
+[defaults.extensions]
+".c" = "cc"
+".cpp" = "cxx"
+
+#---------------
+#MODES
+#---------------
+[modes.release]
+compile_flags = [
+    "-O3",
+    "-pedantic"
+]
+defines = [
+    "NDEBUG"
+]
+
+[modes.debug]
+compile_flags = [
+    "-g",
+    "-pedantic"
+]
+defines = [
+    "DEBUG"
+]
+
+#------------
+#TARGETS
+#------------
+
+[targets.app]
+type = "executable"
+output = "app_name"
+
+source_directories = [
+    "src"
+]
+include_directories = [
+    "include"
+]
+
+dependencies = [
+    "dep1"
+]
+
+[targets.dep1]
+type = "static_lib"
+output = "dep1"
+
+source_directories = [
+    "src/dep1"
+]
+include_directories = [
+    "include"
+]
+dependencies = []
+
+#-------------
+#Build tool config
+#-------------
+[autoc]
+obj_directory = "obj"           #.o
+dependencies_directory = "deps" #.d
+
+#Not implemented, will serve for parallel compilation/linking
+jobs = 1

@@ -10,7 +10,7 @@
 COMPILER := g++
 
 
-CFLAGS := -Wall -Werror -pedantic-errors
+CFLAGS := -Wall -Werror -pedantic-errors -std=c++23
 #debug
 CFLAGS += -ggdb
 
