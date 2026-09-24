@@ -48,7 +48,7 @@ int main() {
 		for(auto&& [name,value] : *targets_tbl){
 			auto target_tbl = value.as_table();
 			
-			auto target = parse_from_table(name, *target_tbl);
+			std::optional<Target> target = parse_from_table(name, *target_tbl);
 			if(!target) return 1;
 
 			targets.push_back(std::move(*target));

@@ -4,14 +4,14 @@
 #include <iostream>
 
 std::optional<Target> parse_from_table(stringview name, toml::table& target){
-    auto get_string = [&](const string& key) -> stringview* {
+    auto get_string = [&](const string& key) -> std::optional<stringview> {
         auto it = target[key].value<stringview>();
 
         if (!it) {
             std::cerr << "[Target: " << name << "]: Missing '" << key << "'\n";
-            return nullptr;
+            return {};
         }
-        return &(*it);
+        return *it;
     };
 
     auto get_vector = [&](const std::string& key) -> std::optional<std::vector<string>>
