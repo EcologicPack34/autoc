@@ -1,74 +1,84 @@
 #example toml configuration (for now)
 
+#NOTE: Look how to add dynamic library support
+
+#---------------
+#PROJECT SETTINGS
+#---------------
 [project]
 name = "autoc" #project name
+language = "c++"
+#type options:
+#"c++" admits compiling c and cpp with its own compiler, then links with cxx comp
+#"c" only uses cc compiler
+toolchain = "gnu"
+target = "app"
 
+[project.extensions]
+".c" = "cc"
+".cpp" = "cxx"
+
+
+#---------------
+#TOOLCHAINS
+#---------------
 [toolchain.gnu]
-cc = "gcc"
-cxx = "g++"
+cc = "gcc"  #c compiler
+cxx = "g++" #cpp compiler
 
 [toolchain.other]
 cc = "othercc"
 cxx = "other++"
 
-[defaults]
-toolchain = "gnu"
-target = "app"
-
-[defaults.extensions]
-".c" = "cc"
-".cpp" = "cxx"
-
 #---------------
 #MODES
 #---------------
 [modes.release]
-compile_flags = [
-    "-O3",
-    "-pedantic"
-]
-defines = [
-    "NDEBUG"
-]
+#general flags of the mode, added on top of target flags
+compile_flags = ["-O3", "-pedantic"]
+link_flags = ["-O3", "-pedantic"]
+defines = ["NDEBUG"]
 
 [modes.debug]
-compile_flags = [
-    "-g",
-    "-pedantic"
-]
-defines = [
-    "DEBUG"
-]
+compile_flags = ["-g", "-pedantic"]
+link_flags = ["-g", "-pedantic"]
+defines = ["DEBUG"]
 
 #------------
 #TARGETS
 #------------
 
 [targets.app]
-type = "executable"
-output = "app_name"
+type = "executable" #output type: executable, static_lib
+output = "app_name" #name of the output
 
-source_directories = [
-    "src"
-]
-include_directories = [
-    "include"
-]
+#base directories, will search recursively
+source_directories = ["src"] #in this case it will exclude directories contained in deps (managed by dep graph)
+include_directories = ["include"]
 
-dependencies = [
-    "dep1"
-]
+compile_flags = []
+link_flags = []
+
+#base directory, will search recursively
+lib_directories = ["lib"]
+static_libraries = [] #static libraries to be added when linking
+
+#other targets in which it depends
+dependencies = ["dep1"]
 
 [targets.dep1]
 type = "static_lib"
 output = "dep1"
 
-source_directories = [
-    "src/dep1"
-]
-include_directories = [
-    "include"
-]
+source_directories = ["src/dep1"]
+include_directories = ["include"]
+
+compile_flags = []
+link_flags = []
+
+lib_directories = ["lib"]
+static_libraries = [] 
+
 dependencies = []
 
 #-------------
@@ -77,6 +87,7 @@ dependencies = []
 [autoc]
 obj_directory = "obj"           #.o
 dependencies_directory = "deps" #.d
+build_directory = "build"
 
 #Not implemented, will serve for parallel compilation/linking
 jobs = 1
