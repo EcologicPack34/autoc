@@ -9,8 +9,7 @@
 
 #include "modules/c_cpp_module.hpp"
 
-#include <toml/toml.hpp>
-#include "config/target.hpp"
+#include "config/config.hpp"
 
 const string configFileName{"autoc.toml"};
 
@@ -31,37 +30,11 @@ int main() {
 	main_module.compile();
 	main_module.link();*/
 
+	Config config{filePath};
 
-	toml::table tbl;
-	try{
-		tbl = toml::parse_file(filePath);
-		//std::cout << tbl << std::endl;
-
-		auto targets_tbl = tbl["targets"].as_table();
-		if(!targets_tbl){
-			std::cerr << "No targets found\n";
-			return 1;
-		}
-		
-		
-		std::vector<Target> targets;
-		for(auto&& [name,value] : *targets_tbl){
-			auto target_tbl = value.as_table();
-			
-			std::optional<Target> target = parse_from_table(name, *target_tbl);
-			if(!target) return 1;
-
-			targets.push_back(std::move(*target));
-		}
-
-
-
+	for(auto& [key, value]: config.getTargets()){
+		std::cout << key << " " << value.getName() << "\n";
 	}
-	catch (const toml::parse_error& err){
-		std::cerr << "Parsing failed: \n" << err << "\n";
-		return 1;
-	}
-
 
 	return 0;
 }

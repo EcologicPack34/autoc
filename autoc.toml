@@ -53,11 +53,12 @@ type = "executable" #output type: executable, static_lib
 output = "app_name" #name of the output
 
 #base directories, will search recursively
-source_directories = ["src"] #in this case it will exclude directories contained in deps (managed by dep graph)
+#in this case it will exclude directories contained in deps (managed by dep graph)
+source_directories = ["src"]        #must be non empty
 include_directories = ["include"]
 
-compile_flags = []
-link_flags = []
+compile_flags = []  #compile time flags
+link_flags = []     #linkage time flags
 
 #base directory, will search recursively
 lib_directories = ["lib"]
@@ -76,7 +77,7 @@ include_directories = ["include"]
 compile_flags = []
 link_flags = []
 
-lib_directories = ["lib"]
+lib_directories = []
 static_libraries = [] 
 
 dependencies = []
