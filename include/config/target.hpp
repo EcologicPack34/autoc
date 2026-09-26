@@ -43,23 +43,7 @@ class Target{
                 const std::vector<string>& source_directories, const std::vector<string>& include_directories, 
                 const std::vector<string>& compile_flags, const std::vector<string>& link_flags,
                 const std::vector<string>& lib_directories, const std::vector<string>& static_libraries,
-                const std::vector<string>& dependencies)
-        {
-            this->name = name;
-            this->type = type;
-            this->output_name = output_name;
-
-            this->source_directories  = source_directories;
-            this->include_directories = include_directories;
-
-            this->compile_flags = compile_flags;
-            this->link_flags = link_flags;
-
-            this->lib_directories = lib_directories;
-            this->static_libraries = static_libraries;
-
-            this->dependencies = dependencies;
-        }
+                const std::vector<string>& dependencies);
 
         stringview getName() const              {return name;}
         Type getType() const  {return type;}
