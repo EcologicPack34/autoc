@@ -8,41 +8,21 @@
 
 #include <optional>
 
-namespace TargetType{
-    enum TargetType{
-        UNKNOWN,
-        EXECUTABLE,
-        STATIC_LIB
-    };
-
-    inline stringview toString(TargetType type){
-        switch (type)
-        {
-        case EXECUTABLE:
-            return "executable";
-        case STATIC_LIB:
-            return "static_lib";
-        default:
-            return "unknown";
-        }
-    }
-
-    inline TargetType fromString(stringview str){
-        if (str == "executable")
-            return TargetType::EXECUTABLE;
-
-        if (str == "static_lib")
-            return TargetType::STATIC_LIB;
-
-        return TargetType::UNKNOWN;
-    }
-}
-
 class Target{
+
+    public:
+        enum Type{
+            UNKNOWN,
+            EXECUTABLE,
+            STATIC_LIB
+        };
+
+        static stringview typeToString(Type type);
+        static Type typeFromString(stringview str);
 
     private:
         string name;
-        TargetType::TargetType type;
+        Type type;
 
         string output_name;
 
@@ -59,7 +39,7 @@ class Target{
         std::vector<string> dependencies;
     public:
         Target() = delete;
-        Target(stringview name, TargetType::TargetType type, stringview output_name,
+        Target(stringview name, Type type, stringview output_name,
                 const std::vector<string>& source_directories, const std::vector<string>& include_directories, 
                 const std::vector<string>& compile_flags, const std::vector<string>& link_flags,
                 const std::vector<string>& lib_directories, const std::vector<string>& static_libraries,
@@ -82,7 +62,7 @@ class Target{
         }
 
         stringview getName() const              {return name;}
-        TargetType::TargetType getType() const  {return type;}
+        Type getType() const  {return type;}
         stringview getOutputName() const        {return output_name;}
 
         const std::vector<string>& getSourceDirectories() const     {return source_directories;}

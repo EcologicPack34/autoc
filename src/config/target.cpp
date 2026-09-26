@@ -3,6 +3,30 @@
 #include <optional>
 #include <iostream>
 
+
+stringview Target::typeToString(Target::Type type){
+    
+    switch (type)
+        {
+        case Target::EXECUTABLE:
+            return "executable";
+        case Target::STATIC_LIB:
+            return "static_lib";
+        default:
+            return "unknown";
+        }
+}
+
+Target::Type Target::typeFromString(stringview str){
+    if (str == "executable")
+            return Target::EXECUTABLE;
+
+        if (str == "static_lib")
+            return Target::STATIC_LIB;
+
+        return Target::UNKNOWN;
+}
+
 std::optional<Target> parse_from_table(stringview name, toml::table& target){
     auto get_string = [&](const string& key) -> std::optional<stringview> {
         auto it = target[key].value<stringview>();
@@ -39,8 +63,8 @@ std::optional<Target> parse_from_table(stringview name, toml::table& target){
     
     auto type = get_string("type");
     if (!type) return {};
-    auto typeEnum = TargetType::fromString(*type);
-    if(typeEnum == TargetType::UNKNOWN){
+    auto typeEnum = Target::typeFromString(*type);
+    if(typeEnum == Target::UNKNOWN){
         std::cerr << "[Target: " << name << "]: Unkown target type '" << *type << "'\n";
         return {};
     } 
