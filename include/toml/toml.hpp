@@ -3282,7 +3282,7 @@ TOML_NAMESPACE_START
 	{
 	  private:
 
-		std::vector<path_component> components_;
+		vec<path_component> components_;
 
 		TOML_EXPORTED_MEMBER_FUNCTION
 		void print_to(std::ostream&) const;
@@ -3599,9 +3599,9 @@ TOML_NAMESPACE_START
 
 #endif // TOML_ENABLE_WINDOWS_COMPAT
 
-		using iterator = std::vector<path_component>::iterator;
+		using iterator = vec<path_component>::iterator;
 
-		using const_iterator = std::vector<path_component>::const_iterator;
+		using const_iterator = vec<path_component>::const_iterator;
 
 		TOML_PURE_INLINE_GETTER
 		iterator begin() noexcept
@@ -4749,12 +4749,12 @@ TOML_NAMESPACE_START
 
 		template <typename T>
 		TOML_NODISCARD
-		friend bool operator==(const node_view& lhs, const std::vector<T>& rhs) noexcept(!impl::is_wide_string<T>)
+		friend bool operator==(const node_view& lhs, const vec<T>& rhs) noexcept(!impl::is_wide_string<T>)
 		{
 			const auto arr = lhs.as<array>();
 			return arr && *arr == rhs;
 		}
-		TOML_ASYMMETRICAL_EQUALITY_OPS(const node_view&, const std::vector<T>&, template <typename T>);
+		TOML_ASYMMETRICAL_EQUALITY_OPS(const node_view&, const vec<T>&, template <typename T>);
 
 		TOML_NODISCARD
 		node_view operator[](std::string_view key) const noexcept
@@ -6175,8 +6175,8 @@ TOML_IMPL_NAMESPACE_START
 		template <bool>
 		friend class array_iterator;
 
-		using mutable_vector_iterator = std::vector<node_ptr>::iterator;
-		using const_vector_iterator	  = std::vector<node_ptr>::const_iterator;
+		using mutable_vector_iterator = vec<node_ptr>::iterator;
+		using const_vector_iterator	  = vec<node_ptr>::const_iterator;
 		using vector_iterator		  = std::conditional_t<IsConst, const_vector_iterator, mutable_vector_iterator>;
 
 		mutable vector_iterator iter_;
@@ -6366,7 +6366,7 @@ TOML_NAMESPACE_START
 	{
 	  private:
 
-		using vector_type			= std::vector<impl::node_ptr>;
+		using vector_type			= vec<impl::node_ptr>;
 		using vector_iterator		= typename vector_type::iterator;
 		using const_vector_iterator = typename vector_type::const_iterator;
 		vector_type elems_;
@@ -7267,11 +7267,11 @@ TOML_NAMESPACE_START
 
 		template <typename T>
 		TOML_NODISCARD
-		friend bool operator==(const array& lhs, const std::vector<T>& rhs) noexcept
+		friend bool operator==(const array& lhs, const vec<T>& rhs) noexcept
 		{
 			return equal_to_container(lhs, rhs);
 		}
-		TOML_ASYMMETRICAL_EQUALITY_OPS(const array&, const std::vector<T>&, template <typename T>);
+		TOML_ASYMMETRICAL_EQUALITY_OPS(const array&, const vec<T>&, template <typename T>);
 
 #if TOML_ENABLE_FORMATTERS
 
@@ -9988,7 +9988,7 @@ TOML_NAMESPACE_START
 	  private:
 
 		using base = impl::formatter;
-		std::vector<const key*> key_path_;
+		vec<const key*> key_path_;
 		bool pending_table_separator_ = false;
 
 		TOML_EXPORTED_MEMBER_FUNCTION
@@ -11473,7 +11473,7 @@ TOML_NAMESPACE_END;
 TOML_ANON_NAMESPACE_START
 {
 	TOML_INTERNAL_LINKAGE
-	bool parse_path_into(std::string_view path_str, std::vector<path_component> & components)
+	bool parse_path_into(std::string_view path_str, vec<path_component> & components)
 	{
 		using components_type = std::remove_reference_t<decltype(components)>;
 
@@ -11712,8 +11712,8 @@ TOML_NAMESPACE_START
 	}
 
 	TOML_EXTERNAL_LINKAGE
-	path path::subpath(std::vector<path_component>::const_iterator start,
-					   std::vector<path_component>::const_iterator end) const
+	path path::subpath(vec<path_component>::const_iterator start,
+					   vec<path_component>::const_iterator end) const
 	{
 		if (start >= end)
 			return {};
@@ -13443,9 +13443,9 @@ TOML_ANON_NAMESPACE_START
 	struct parse_key_buffer
 	{
 		std::string buffer;
-		std::vector<std::pair<size_t, size_t>> segments;
-		std::vector<source_position> starts;
-		std::vector<source_position> ends;
+		vec<std::pair<size_t, size_t>> segments;
+		vec<source_position> starts;
+		vec<source_position> ends;
 
 		void clear() noexcept
 		{
@@ -13515,10 +13515,10 @@ TOML_ANON_NAMESPACE_START
 
 	struct table_vector_scope
 	{
-		std::vector<table*>& tables;
+		vec<table*>& tables;
 
 		TOML_NODISCARD_CTOR
-		explicit table_vector_scope(std::vector<table*>& tables_, table& tbl) //
+		explicit table_vector_scope(vec<table*>& tables_, table& tbl) //
 			: tables{ tables_ }
 		{
 			tables.push_back(&tbl);
@@ -13653,10 +13653,10 @@ TOML_IMPL_NAMESPACE_START
 		table root;
 		source_position prev_pos = { 1, 1 };
 		const utf8_codepoint* cp = {};
-		std::vector<table*> implicit_tables;
-		std::vector<table*> dotted_key_tables;
-		std::vector<table*> open_inline_tables;
-		std::vector<array*> table_arrays;
+		vec<table*> implicit_tables;
+		vec<table*> dotted_key_tables;
+		vec<table*> open_inline_tables;
+		vec<array*> table_arrays;
 		parse_key_buffer key_buffer;
 		std::string string_buffer;
 		std::string recording_buffer; // for diagnostics
@@ -16389,7 +16389,7 @@ TOML_ANON_NAMESPACE_START
 		constexpr auto large_file_threshold = 1024 * 1024 * 2; // 2 MB
 		if (file_size <= large_file_threshold)
 		{
-			std::vector<char> file_data;
+			vec<char> file_data;
 			file_data.resize(static_cast<size_t>(file_size));
 			file.read(file_data.data(), static_cast<std::streamsize>(file_size));
 			return parse(std::string_view{ file_data.data(), file_data.size() }, std::move(file_path_str));

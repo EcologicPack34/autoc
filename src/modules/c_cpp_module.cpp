@@ -23,15 +23,15 @@ static const string setting_exec_name{"exec_name"};
 
 /*-----DEFINITIONS------*/
 
-std::vector<fs::path> read_dependencies(const fs::path& dep_file);
-std::vector<fs::path> get_include_dirs(const fs::path& cwd);
+vec<fs::path> read_dependencies(const fs::path& dep_file);
+vec<fs::path> get_include_dirs(const fs::path& cwd);
 
-bool compile_file(const std::vector<string>& base_cmd, const fs::path& src, const fs::path& obj);
+bool compile_file(const vec<string>& base_cmd, const fs::path& src, const fs::path& obj);
 bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file);
 
 /*-----------IMPLEMENTATION------------*/
 
-std::vector<fs::path> read_dependencies(const fs::path& dep_file)
+vec<fs::path> read_dependencies(const fs::path& dep_file)
 {
     std::ifstream file(dep_file);
 
@@ -52,7 +52,7 @@ std::vector<fs::path> read_dependencies(const fs::path& dep_file)
 
     std::istringstream stream{content.substr(colon + 1)};
 
-    std::vector<std::filesystem::path> deps;
+    vec<std::filesystem::path> deps;
     std::string dep;
 
     while (stream >> dep){
@@ -65,9 +65,9 @@ std::vector<fs::path> read_dependencies(const fs::path& dep_file)
     return deps;
 }
 
-std::vector<fs::path> get_include_dirs(const fs::path& include_path){
+vec<fs::path> get_include_dirs(const fs::path& include_path){
 
-    std::vector<fs::path> dirs;
+    vec<fs::path> dirs;
     dirs.push_back(include_path);
 
     for(const auto& entry : fs::recursive_directory_iterator(include_path)){
@@ -79,8 +79,8 @@ std::vector<fs::path> get_include_dirs(const fs::path& include_path){
     return dirs;
 }
 
-bool compile_file(const std::vector<string>& base_cmd, const fs::path& src, const fs::path& obj){
-    std::vector<string> cmd {base_cmd};
+bool compile_file(const vec<string>& base_cmd, const fs::path& src, const fs::path& obj){
+    vec<string> cmd {base_cmd};
 
     cmd.push_back("-c");
     cmd.push_back(src.string());
@@ -117,7 +117,7 @@ bool needs_recompilation(const fs::path& obj_file, const fs::path& dep_file){
     return false;
 }
 
-bool C_CPP_Module::read_settings(const std::unordered_map<string, string>& settings_map){
+bool C_CPP_Module::read_settings(const umap<string, string>& settings_map){
     auto get_setting = [&](const string& key) -> const string* {
         auto it = settings_map.find(key);
 
@@ -193,7 +193,7 @@ bool C_CPP_Module::compile(){
     fs::path src_path{ cwd / this->src_dir};
     fs::path include_path{ cwd / this->include_dir};
 
-    std::vector<string> base_cmd;
+    vec<string> base_cmd;
     base_cmd.emplace_back(this->compiler);
 
     base_cmd.push_back("-MMD");
@@ -201,13 +201,13 @@ bool C_CPP_Module::compile(){
     //Insert compile flags into command
     base_cmd.insert(base_cmd.end(), this->compile_flags.begin(), this->compile_flags.end());
 
-    std::vector<fs::path> includes{ get_include_dirs(include_path) };
+    vec<fs::path> includes{ get_include_dirs(include_path) };
     for(const auto& dir: includes){
         base_cmd.push_back("-I" + dir.string());
     }
 
-    std::vector<fs::path> obj_files;
-    std::vector<fs::path> src_files {get_files_in_dir(cwd, this->src_extensions)};
+    vec<fs::path> obj_files;
+    vec<fs::path> src_files {get_files_in_dir(cwd, this->src_extensions)};
     for(const auto& src : src_files){
         fs::path relative = fs::relative(src, src_path);
         fs::path dep_file{obj_path / relative.replace_extension(".d")};
@@ -227,7 +227,7 @@ bool C_CPP_Module::compile(){
 }
 
 bool C_CPP_Module::link(){
-    std::vector<string> cmd;
+    vec<string> cmd;
 
     cmd.emplace_back(this->compiler);
     //Insert compile flags into command
@@ -239,7 +239,7 @@ bool C_CPP_Module::link(){
 
     bool needs_link = fs::exists(exec_path) ? false : true;
 
-    std::vector<fs::path> src_files {get_files_in_dir(cwd, this->src_extensions)};
+    vec<fs::path> src_files {get_files_in_dir(cwd, this->src_extensions)};
     for(const auto& src : src_files){
         fs::path relative = fs::relative(src, src_path);
         fs::path obj_file{obj_path / relative.replace_extension(".o")};

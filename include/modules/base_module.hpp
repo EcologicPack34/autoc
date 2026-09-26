@@ -8,7 +8,7 @@
 
 class BaseModule{
     public:
-        virtual bool read_settings(const std::unordered_map<string, string>& settings_map) = 0;
+        virtual bool read_settings(const umap<string, string>& settings_map) = 0;
         virtual bool create_project_structure() = 0;
         virtual bool compile() = 0;
         virtual bool link() = 0;

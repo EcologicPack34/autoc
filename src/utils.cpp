@@ -5,12 +5,12 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-int execute_and_wait(const std::vector<std::string>& cmd){
+int execute_and_wait(const vec<string>& cmd){
 
     pid_t pid = fork();
     if(pid < 0) return -1;
     else if(pid == 0){
-        std::vector<char*> argv;
+        vec<char*> argv;
         //no usar const para bucle por implicit type conversion
         for(auto& token : cmd){
             argv.push_back((char *)token.data());

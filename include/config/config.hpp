@@ -4,15 +4,18 @@
 
 #include "types.hpp"
 #include "config/target.hpp"
+#include "config/toolchain.hpp"
 
 class Config{
     private:
-        std::unordered_map<string, Target> targets;
+        umap<string, Target> targets;
+        umap<string, Toolchain> toolchains;
 
     public:
         Config() = delete;
 
         Config(stringview config_path);
 
-        const std::unordered_map<string, Target>& getTargets(){return targets;}
+        const umap<string, Target>& getTargets() const        {return targets;}
+        const umap<string, Toolchain>& getToolchains() const  {return toolchains;}
 };

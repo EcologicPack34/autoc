@@ -11,7 +11,7 @@
 
 class C_CPP_Module : public BaseModule{
     public:
-        bool read_settings(const std::unordered_map<string, string>& settings_map);
+        bool read_settings(const umap<string, string>& settings_map);
         bool create_project_structure();
         bool compile();
         bool link();
@@ -21,8 +21,8 @@ class C_CPP_Module : public BaseModule{
 
     private:
         string compiler;
-        std::vector<string> compile_flags;
-        std::vector<string> src_extensions;
+        vec<string> compile_flags;
+        vec<string> src_extensions;
 
         string src_dir;
         string obj_dir;

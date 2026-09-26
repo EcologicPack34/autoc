@@ -7,15 +7,15 @@
 
 #include "types.hpp"
 
-std::unordered_map<string, string> map_settings_file(const std::filesystem::path& path);
+umap<string, string> map_settings_file(const std::filesystem::path& path);
 
-std::vector<std::filesystem::path> get_files_in_dir(const std::filesystem::path& path, const std::vector<string>& extensions);
+vec<std::filesystem::path> get_files_in_dir(const std::filesystem::path& path, const vec<string>& extensions);
 
-std::vector<string> string_to_vector(const string& str, char separator = ' ');
+vec<string> string_to_vector(const string& str, char separator = ' ');
 
 /**
  * Returns -1 if file1 older, 0 if equal, 1 if file2 older
  */
-std::optional<int> compare_file_mod_dates(const std::filesystem::path& file1, const std::filesystem::path& file2);
+optional<int> compare_file_mod_dates(const std::filesystem::path& file1, const std::filesystem::path& file2);
 
 #endif

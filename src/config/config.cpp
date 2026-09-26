@@ -15,15 +15,10 @@ Config::Config(stringview config_path){
 			return;
 		}
 		
-		for(auto&& [name,value] : *targets_tbl){
+		for(auto&& [name,value] : *targets_tbl)
+		{
 			auto target_tbl = value.as_table();
-			
-			std::optional<Target> target = parse_from_table(name, *target_tbl);
-			if(!target) return;
-
-			//valid because string creates copy of stringview
-			//less memory efficient, but safer because if not when doing move it would break
-            this->targets.emplace((*target).getName(), std::move(*target));
+            this->targets.emplace(name, std::move(Target{name, *target_tbl}));
 		}
 	}
 	catch (const toml::parse_error& err){

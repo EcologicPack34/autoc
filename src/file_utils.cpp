@@ -5,7 +5,7 @@
 #include "utils.hpp"
 #include "file_utils.hpp"
 
-std::unordered_map<string, string> map_settings_file(const std::filesystem::path& path){
+umap<string, string> map_settings_file(const std::filesystem::path& path){
 	
 	std::ifstream configFile(path);
 
@@ -14,7 +14,7 @@ std::unordered_map<string, string> map_settings_file(const std::filesystem::path
         return {};
     }
 
-    std::unordered_map<std::string, std::string> map;
+    umap<std::string, std::string> map;
 
     string line;
     while (std::getline(configFile, line)) {
@@ -53,7 +53,7 @@ std::unordered_map<string, string> map_settings_file(const std::filesystem::path
 }
 
 //local overload of the function for recursion
-void get_files_in_dir(const std::filesystem::path& path, const std::vector<string>& extensions, std::vector<std::filesystem::path>& result){
+void get_files_in_dir(const std::filesystem::path& path, const vec<string>& extensions, vec<std::filesystem::path>& result){
     for(const auto& entry : std::filesystem::directory_iterator(path))
     {
 		if(entry.is_directory())
@@ -74,21 +74,21 @@ void get_files_in_dir(const std::filesystem::path& path, const std::vector<strin
 	}
 }
 
-std::vector<std::filesystem::path> get_files_in_dir(const std::filesystem::path& path, const std::vector<string>& extensions){
+vec<std::filesystem::path> get_files_in_dir(const std::filesystem::path& path, const vec<string>& extensions){
     
-    std::vector<std::filesystem::path> result;
+    vec<std::filesystem::path> result;
     
     get_files_in_dir(path, extensions, result);
 
     return result;
 }
 
-std::vector<string> string_to_vector(const string& str, char separator){
+vec<string> string_to_vector(const string& str, char separator){
 
 	std::stringstream stream{str};
 	string token;
 
-	std::vector<string> output;
+	vec<string> output;
 	while(std::getline(stream, token, separator)){
 		output.push_back(token);
 	}
@@ -96,7 +96,7 @@ std::vector<string> string_to_vector(const string& str, char separator){
 	return output;
 }
 
-std::optional<int> compare_file_mod_dates(const std::filesystem::path& file1, const std::filesystem::path& file2){
+optional<int> compare_file_mod_dates(const std::filesystem::path& file1, const std::filesystem::path& file2){
 
     if(std::filesystem::exists(file1) == false || std::filesystem::exists(file2) == false){
         return {};

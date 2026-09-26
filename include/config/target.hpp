@@ -26,40 +26,36 @@ class Target{
 
         string output_name;
 
-        std::vector<string> source_directories;
-        std::vector<string> include_directories;
+        vec<string> source_directories;
+        vec<string> include_directories;
 
-        std::vector<string> compile_flags;
-        std::vector<string> link_flags;
+        vec<string> compile_flags;
+        vec<string> link_flags;
 
-        std::vector<string> lib_directories;
-        std::vector<string> static_libraries;
+        vec<string> lib_directories;
+        vec<string> static_libraries;
 
         //other target dependencies
-        std::vector<string> dependencies;
+        vec<string> dependencies;
     public:
         Target() = delete;
-        Target(stringview name, Type type, stringview output_name,
-                const std::vector<string>& source_directories, const std::vector<string>& include_directories, 
-                const std::vector<string>& compile_flags, const std::vector<string>& link_flags,
-                const std::vector<string>& lib_directories, const std::vector<string>& static_libraries,
-                const std::vector<string>& dependencies);
+        Target(stringview name, toml::table& target);
 
         stringview getName() const              {return name;}
         Type getType() const  {return type;}
         stringview getOutputName() const        {return output_name;}
 
-        const std::vector<string>& getSourceDirectories() const     {return source_directories;}
-        const std::vector<string>& getIncludeDirectories() const    {return include_directories;}
+        const vec<string>& getSourceDirectories() const     {return source_directories;}
+        const vec<string>& getIncludeDirectories() const    {return include_directories;}
 
-        const std::vector<string>& getDependencies() const  {return dependencies;}
+        const vec<string>& getDependencies() const  {return dependencies;}
 
-        const std::vector<string>& getCompileFlags() const  {return compile_flags;}
-        const std::vector<string>& getLinkFlags() const     {return link_flags;}
+        const vec<string>& getCompileFlags() const  {return compile_flags;}
+        const vec<string>& getLinkFlags() const     {return link_flags;}
 
-        const std::vector<string>& getLibDirectories() const    {return lib_directories;}
-        const std::vector<string>& getLibraries() const         {return static_libraries;}
+        const vec<string>& getLibDirectories() const    {return lib_directories;}
+        const vec<string>& getLibraries() const         {return static_libraries;}
     
 };
 
-std::optional<Target> parse_from_table(stringview name, toml::table& target);
+//optional<Target> parse_from_table(stringview name, toml::table& target);
