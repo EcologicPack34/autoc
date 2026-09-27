@@ -14,6 +14,10 @@ language = "c++"
 toolchain = "gnu"
 target = "app"
 
+source_directory = "src"
+include_directory = "include"
+lib_directory = "lib"
+
 [project.extensions]
 ".c" = "cc"
 ".cpp" = "cxx"
@@ -48,36 +52,30 @@ defines = ["DEBUG"]
 #TARGETS
 #------------
 
+
+#each target must have its own directory inside the src folder.
+#each target directory must be independent from other targets.
+#the target directoy name must be the same as the target name example: [target.app] -> src/app/
+
 [targets.app]
 type = "executable" #output type: executable, static_lib
 output = "app_name" #name of the output
 
-#base directories, will search recursively
-#in this case it will exclude directories contained in deps (managed by dep graph)
-source_directories = ["src"]        #must be non empty
-include_directories = ["include"]
-
 compile_flags = []  #compile time flags
 link_flags = []     #linkage time flags
 
-#base directory, will search recursively
-lib_directories = ["lib"]
 static_libraries = [] #static libraries to be added when linking
 
-#other targets in which it depends
+#other targets in which it depends, they cant be executables, as executables cant be linked together
 dependencies = ["dep1"]
 
 [targets.dep1]
 type = "static_lib"
 output = "dep1"
 
-source_directories = ["src/dep1"]
-include_directories = ["include"]
-
 compile_flags = []
 link_flags = []
 
-lib_directories = []
 static_libraries = [] 
 
 dependencies = []

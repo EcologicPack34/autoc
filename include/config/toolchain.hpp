@@ -2,6 +2,8 @@
 
 #include "types.hpp"
 
+#include "toml/toml.hpp"
+
 class Toolchain{
     private:
         string c_compiler;
@@ -9,11 +11,8 @@ class Toolchain{
 
     public:
         Toolchain() = delete;
-        Toolchain(stringview c_compiler, stringview cpp_compiler)
-            : c_compiler{c_compiler}, cpp_compiler{cpp_compiler} {};
+        Toolchain(stringview name, toml::table& table);
 
         stringview getCCompiler()   {return c_compiler;}
         stringview getCppCompiler() {return cpp_compiler;}
 };
-
-//optional<Toolchain> parse_from_table(stringview name, toml::table& target);

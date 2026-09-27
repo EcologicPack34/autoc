@@ -26,13 +26,9 @@ class Target{
 
         string output_name;
 
-        vec<string> source_directories;
-        vec<string> include_directories;
-
         vec<string> compile_flags;
         vec<string> link_flags;
 
-        vec<string> lib_directories;
         vec<string> static_libraries;
 
         //other target dependencies
@@ -45,15 +41,11 @@ class Target{
         Type getType() const  {return type;}
         stringview getOutputName() const        {return output_name;}
 
-        const vec<string>& getSourceDirectories() const     {return source_directories;}
-        const vec<string>& getIncludeDirectories() const    {return include_directories;}
-
         const vec<string>& getDependencies() const  {return dependencies;}
 
         const vec<string>& getCompileFlags() const  {return compile_flags;}
         const vec<string>& getLinkFlags() const     {return link_flags;}
 
-        const vec<string>& getLibDirectories() const    {return lib_directories;}
         const vec<string>& getLibraries() const         {return static_libraries;}
     
 };
