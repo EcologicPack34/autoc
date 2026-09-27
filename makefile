@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: MIT
 
 #===== VARIABLES - Config =======
-COMPILER := g++
+COMPILER := clang++
 
 
 CFLAGS := -Wall -Werror -pedantic-errors -std=c++23
