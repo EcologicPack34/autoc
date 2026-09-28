@@ -18,7 +18,18 @@ Config::Config(stringview config_path){
 		for(auto&& [name,value] : *targets_tbl)
 		{
 			auto target_tbl = value.as_table();
-            this->targets.emplace(name, std::move(Target{name, *target_tbl}));
+            this->targets.emplace(name, Target{name, *target_tbl});
+		}
+
+		auto toolchains_tbl = tbl["toolchain"].as_table();
+		if(!toolchains_tbl){
+			std::cerr << "No toolchains found\n";
+			return;
+		}
+
+		for (auto&& [name, value] : *toolchains_tbl){
+			auto toolchain = value.as_table();
+			this-> toolchains.emplace(name, Toolchain{name, *toolchain});
 		}
 	}
 	catch (const toml::parse_error& err){

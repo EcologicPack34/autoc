@@ -6,6 +6,7 @@
 
 class Toolchain{
     private:
+        string name;
         string c_compiler;
         string cpp_compiler;
 
@@ -13,6 +14,7 @@ class Toolchain{
         Toolchain() = delete;
         Toolchain(stringview name, toml::table& table);
 
-        stringview getCCompiler()   {return c_compiler;}
-        stringview getCppCompiler() {return cpp_compiler;}
+        stringview getName() const          {return name;}
+        stringview getCCompiler() const     {return c_compiler;}
+        stringview getCppCompiler() const   {return cpp_compiler;}
 };
