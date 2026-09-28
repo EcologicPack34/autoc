@@ -32,10 +32,5 @@ int main() {
 
 	Config config{filePath};
 
-	for(auto& [key, value]: config.getToolchains()){
-		std::cout << key << " " << value.getCCompiler() << " " << value.getCppCompiler() << "\n";
-	}
-
-
 	return 0;
 }

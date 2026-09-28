@@ -31,7 +31,7 @@ Target::Type Target::typeFromString(stringview str){
 //TODO: add exeception throwing instead of return
 Target::Target(stringview name, toml::table& target){
     auto get_string = [&](const string& key) -> optional<stringview> {
-        auto val = target[key].value<stringview>();
+        auto val = target.at(key).value<stringview>();
 
         if (!val) {
             std::cerr << "[Target: " << name << "]: Missing '" << key << "'\n";
@@ -42,7 +42,7 @@ Target::Target(stringview name, toml::table& target){
 
     auto get_vector = [&](const std::string& key) -> optional<vec<string>>
     {
-        auto arr = target[key].as_array();
+        auto arr = target.at(key).as_array();
 
         if (!arr) {
             std::cerr << "[Target: " << name << "]: Missing '" << key << "'\n";

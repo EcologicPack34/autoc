@@ -5,10 +5,10 @@
 //Change return to exception throwing
 Toolchain::Toolchain(stringview name, toml::table& table){
     auto get_string = [&](const string& key) -> optional<stringview> {
-        auto val = table[key].value<stringview>();
+        auto val = table.at(key).value<stringview>();
 
         if (!val) {
-            std::cerr << "[Target: " << name << "]: Missing '" << key << "'\n";
+            std::cerr << "[Toolchain: " << name << "]: Missing '" << key << "'\n";
             return {};
         }
         return *val;
